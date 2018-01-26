@@ -1,9 +1,78 @@
+
 <div class="jumbotron">
 	<h1 class="display-3">Admin Dashboard</h1>
 </div>
 
-<div class="row">
-	<div class="col-lg-12">
-		
-	</div>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Request List</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#request" role="tab">Request History</a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  	<div class="tab-pane active" id="home" role="tabpanel">
+  		<div id="accordion" role="tablist" aria-multiselectable="true">
+	  		{{#each rooms}}
+	  		<div class="card">
+	  			 <div class="card-header" role="tab" id="headingOne">
+			      	<h5 class="mb-0">
+			        	<a data-toggle="collapse" data-parent="#accordion" href="#collapse{{@index}}" aria-expanded="true" aria-controls="collapse{{@index}}">
+			          		{{math @index "+" 1}}. {{ this.room.name }}
+			        	</a>
+			      	</h5>
+			    </div>
+
+			    <div id="collapse{{@index}}" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+			    	<div class="card-block">
+			    		<ul style="list-style: none">
+			    			<li>Requested by: {{ this.user.username }}</li>
+			        		<li>Room: {{ this.room.name }}</li>
+			        		<li>Date &amp; Time: <span class="time_stamp">{{ this.date_time }}</span></li>
+			        	</ul>
+			        	<div class="text-center">
+			        		<button id="acceptRequest" class="btn btn-outline-primary btn-sm" data-id="{{ this.id }}">Accept Request</button>
+			        		<button id="declineRequest" class="btn btn-outline-danger btn-sm" data-id="{{ this.id }}">Decline Request</button>
+			        	</div>
+			      	</div>
+			    </div>
+		    </div>
+	  		{{/each}}
+  		</div>
+  	</div>
+  	<div class="tab-pane" id="request" role="tabpanel">
+			<div id="accordion" role="tablist" aria-multiselectable="true">
+	  		{{#each history}}
+	  		<div class="card">
+	  			 <div class="card-header" role="tab" id="headingOne">
+			      	<h5 class="mb-0">
+			        	<a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{@index}}" aria-expanded="true" aria-controls="collapse_{{@index}}">
+			          		{{math @index "+" 1}}. {{ this.room.name }}
+			        	</a>
+			      	</h5>
+			    </div>
+
+			    <div id="collapse_{{@index}}" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+			    	<div class="card-block">
+			    		<ul style="list-style: none">
+			    			<li>Requested by: {{ this.user.username }}</li>
+			        		<li>Room: {{ this.room.name }}</li>
+			        		<li>Date &amp; Time: <span class="time_stamp">{{ this.date_time }}</span></li>
+			        		{{#ifvalue this.status equals="accepted"}}
+			        		<li><span class="badge badge-success">Accepted</span></li>
+			        		{{/ifvalue}}
+			        		{{#ifvalue this.status equals="declined"}}
+			        		<li><span class="badge badge-danger">Declined</span></li>
+			        		{{/ifvalue}}
+			        	</ul>
+			      	</div>
+			    </div>
+		    </div>
+	  		{{/each}}
+  		</div>
+  	</div>
 </div>

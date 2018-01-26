@@ -1,10 +1,9 @@
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 var bcrypt 	= require('bcryptjs');
-const db 	= require('../db');
+const db = require('../db');
 
-var sequelize = new Sequelize('postgres://postgres:admin@localhost:5432/taralite');
-
-var User = sequelize.define('users', {
+var User = db.define('users', {
+    id: { autoIncrement: true, primaryKey: true, type: Sequelize.INTEGER},
     username: {
         type: Sequelize.STRING,
         unique: false,
@@ -32,7 +31,5 @@ var User = sequelize.define('users', {
       }
     }    
 });
-
-sequelize.sync();
 
 module.exports = User;

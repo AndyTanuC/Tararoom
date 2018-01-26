@@ -17,13 +17,16 @@
 			<nav>
 			  <ul class="nav nav-pills float-right">
 			    <li class="nav-item">
-			      <a class="nav-link" href="/">Dashboard</a>
+			      <a class="nav-link" href="/">Home</a>
 			    </li>
 			    {{#if admin}}
 			    <li class="nav-item">
 			      <a class="nav-link" href="/admin/logout">Logout</a>
 			    </li>
 			    {{else if user}}
+			    <li class="nav-item">
+			      <a class="nav-link" href="/user/dashboard">Dashboard</a>
+			    </li>
 			    <li class="nav-item">
 			      <a class="nav-link" href="/user/logout">Logout</a>
 			    </li>

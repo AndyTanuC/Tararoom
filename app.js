@@ -1,14 +1,14 @@
 var express 	= require('express'),
+	db 			= require('./db');
 	path 		= require('path'),
 	bodyParser 	= require('body-parser'),
 	cookieParser= require('cookie-parser'),
-	exphand 	= require('express-handlebars'),
+	exphbs 		= require('express-handlebars'),
 	flash 		= require('connect-flash'),
 	session 	= require('express-session'),
 	passport 	= require('passport'),
 	localStrategy 		= require('passport-local').Strategy,
 	expressValidator 	= require('express-validator'),
-	// passportConfig = require('./config/passport'),
 	app 		= express();
 
 // Assign routes
@@ -18,7 +18,27 @@ var admin 		= require('./routes/admin');
 
 // Set View Engine
 app.set('views',path.join(__dirname, 'views'));
-app.engine('handlebars', exphand({defaultLayout: 'layout'}));
+app.engine('handlebars', exphbs({
+	defaultLayout: 'layout',
+  	helpers:{
+    math: function(lvalue, operator, rvalue) {lvalue = parseFloat(lvalue);
+        rvalue = parseFloat(rvalue);
+        return {
+            "+": lvalue + rvalue,
+            "-": lvalue - rvalue,
+            "*": lvalue * rvalue,
+            "/": lvalue / rvalue,
+            "%": lvalue % rvalue
+        }[operator];
+    },
+    ifvalue: function (conditional, options) { 
+    	if (conditional == options.hash.equals) {
+	        return options.fn(this);
+	    } else {
+	        return options.inverse(this);
+	    }
+    }
+}}));
 app.set('view engine', 'handlebars');
 
 // Static Path
@@ -86,4 +106,12 @@ app.set('port', (process.env.PORT || 3000));
 
 app.listen(app.get('port'),function() {
 	console.log('Started');
+	db.sync({force: false})
+    .then(message => {
+      	console.log('...and db is synced!');
+    })
+    .catch(function(err) {
+      	throw err;
+    });
+
 });

@@ -2,6 +2,8 @@ var express 	= require('express');
 var router  	= express.Router();
 var passport 	= require('passport');
 var User 		= require('../models/user');
+var Room 		= require('../models/rooms');
+var roomRequest = require('../models/room_requests');
 require('../config/passport.js')(passport,User);
 
 
@@ -33,34 +35,46 @@ router.get('/dashboard', isLoggedIn ,function(req,res){
 		{ script: '/js/user.js'}
 	];
 
-	res.render('dashboard_user',{
-		scripts:scripts,
-		styles:styles
-	});
+
+	Room.findAll().then( function(room_list) {
+		// console.log(room_list[0].dataValues.room_requests);
+	   	var room_requests = roomRequest.findAll({ include: [{model: Room, required: true}], where: { user_id: req.user.id } }
+	   	).then( function(rooms) {
+
+			res.render('dashboard_user',{
+				scripts:scripts,
+				styles:styles,
+				roomlist:room_list,
+				rooms: rooms
+			});
+		});
+	}); 
 });
 //END
 
 // REQUEST ROOM
 router.post('/request',isLoggedIn,function(req,res){
 	var name 		= req.body.name;
-	var datetime 	= req.body.datetime;
+	var room_id 	= req.body.room_id;
+	var user_id 	= req.user.id;
+	var date_time 	= req.body.date_time;
 	var description = req.body.description;
 
-	// Validation
-	req.checkBody('name', 'Name is required').notEmpty();
-	req.checkBody('datetime', 'Date Time is required').notEmpty();
-	
-	var errors = req.validationErrors();
-
-	if(errors){
-		res.render('dashboard_user',{
-			scripts:scripts,
-			styles:styles,
-			errors:errors
-		});
-	} else {
-
-	}
+	roomRequest.create({
+        name: name,
+        user_id: user_id,
+        room_id: room_id,
+        date_time: date_time,
+        description: description
+    },{
+    	fields: ['name','user_id','room_id','date_time','description']
+    }).then(function(data) {
+        res.status(200);
+        res.redirect('/user/dashboard');
+    }).catch(function(error) {
+        res.status(500);
+        res.json({error:error, stackError:error.stack});
+    });
 });
 // END
 

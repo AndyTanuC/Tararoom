@@ -1,37 +1,79 @@
+
 <div class="jumbotron">
 	<h1 class="display-3">User Dashboard</h1>
 </div>
 
-<div class="row">
-	<div class="col-lg-12 text-center">
-		<p>
-		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-		    Request Room
-		 </button>
-		 </p>
-	</div>
-	<div class="collapse col-lg-12" id="collapseExample">
-		<div class="card card-block">
-	 		<form method="POST" action="/user/request">
-	 			<div class="form-group">
-	 				<label for="InputName">Full Name</label>
- 					<input type="text" name="name" class="form-control" placeholder="Type your name" required>
- 				</div>
- 				<div class="form-group">
- 					<label for="InputDateTime">Date and Time</label>
- 					<div class='input-group date' id='datetimepicker'>
-	                    <input type='text' class="form-control" name="datetime" />
-	                    <span class="input-group-addon">
-	                        <span class="glyphicon glyphicon-calendar"></span>
-	                    </span>
-	                </div>		
- 				</div>
- 				<div class="form-group">
- 					<label for="Description">Description</label>
- 					<textarea class="form-control" name="description"></textarea>
- 				</div>
- 				<button class="btn btn-info">Submit</button>
-	 		</form>
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#home" role="tab">Request List</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#request" role="tab">Request Room</a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  	<div class="tab-pane active" id="home" role="tabpanel">
+  		<div id="accordion" role="tablist" aria-multiselectable="true">
+	  	{{#each rooms}}
+	  		<div class="card">
+	  			 <div class="card-header" role="tab" id="headingOne">
+			      	<h5 class="mb-0">
+			        	<a data-toggle="collapse" data-parent="#accordion" href="#collapse{{@index}}" aria-expanded="true" aria-controls="collapse{{@index}}">
+			          		{{math @index "+" 1}}. {{ this.room.name }}
+			        	</a>
+			      	</h5>
+			    </div>
+
+			    <div id="collapse{{@index}}" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+			    	<div class="card-block">
+			    		<ul style="list-style: none">
+			        		<li>Room: {{ this.room.name }}</li>
+			        		<li>Date &amp; Time: <span class="time_stamp">{{ this.date_time }}</span></li>
+			        		<li>Status: {{this.status}}</li>
+			        	</ul>
+			      	</div>
+			    </div>
+		    </div>
+	  	{{/each}}
+  		</div>
+  	</div>
+  	<div class="tab-pane" id="request" role="tabpanel">
+  		<div class="row">
+			<div class="col-lg-12">
+				<div class="card card-block">
+			 		<form method="POST" action="/user/request">
+			 			<div class="form-group">
+			 				<label for="InputName">Full Name</label>
+		 					<input type="text" name="name" class="form-control" placeholder="Type your name" required>
+		 				</div>
+		 				<div class="form-group">
+			 				<label for="InputName">Room</label>
+		 					<select class="form-control" name="room_id">
+		 						{{#each roomlist}}
+		 						<option value="{{this.id}}">{{this.name}}</option>
+		 						{{/each}}
+		 					</select>
+		 				</div>
+		 				<div class="form-group">
+		 					<label for="InputDateTime">Date and Time</label>
+		 					<div class='input-group date' id='datetimepicker'>
+			                    <input type='text' class="form-control" name="date_time" placeholder="Choose the date and time" />
+			                    <span class="input-group-addon">
+			                        <span class="glyphicon glyphicon-calendar"></span>
+			                    </span>
+			                </div>		
+		 				</div>
+		 				<div class="form-group">
+		 					<label for="Description">Description</label>
+		 					<textarea class="form-control" name="description"></textarea>
+		 				</div>
+		 				<input class="btn btn-info" type="submit" value="Submit">
+			 		</form>
+				</div>
+			</div>		
 		</div>
-	</div>		
+  	</div>
 </div>
